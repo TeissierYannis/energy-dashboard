@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/energy
+    username: energy
+    password: energy
+  jpa:
+    hibernate.ddl-auto: validate
+  flyway.enabled: true
+  cache.type: redis
+
+server.port: 8080
