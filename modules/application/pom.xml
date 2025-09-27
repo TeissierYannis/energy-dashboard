@@ -4,85 +4,72 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>fr.teissiery.energy</groupId>
     <artifactId>application</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <name>application</name>
+    <description>Application module</description>
+    <groupId>fr.teissiery.energy</groupId>
+    <version>0.0.1-SNAPSHOT</version>
 
     <properties>
-        <!-- Java -->
-        <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <!-- Versions -->
-        <slf4j.version>2.0.13</slf4j.version>
-        <junit.version>5.11.3</junit.version>
-        <mockito.version>5.12.0</mockito.version>
-        <logback.version>1.5.13</logback.version>
+        <!-- Force Java 21 pour la compilation -->
+        <maven.compiler.release>21</maven.compiler.release>
+        <!-- Versions centralisées (dans CE POM) -->
+        <slf4j.version>2.0.16</slf4j.version>
+        <junit.jupiter.version>5.11.3</junit.jupiter.version>
+        <mockito.junit.jupiter.version>5.12.0</mockito.junit.jupiter.version>
+        <surefire.version>3.2.5</surefire.version>
+        <compiler.plugin.version>3.13.0</compiler.plugin.version>
     </properties>
 
     <dependencies>
-        <!-- Domaine (module sibling) -->
+        <!-- Domain (même version que le parent multi-modules) -->
         <dependency>
             <groupId>fr.teissiery.energy</groupId>
             <artifactId>domain</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
-        <!-- Logging API -->
+        <!-- Logs purs -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
 
-        <!-- Runtime logger (pour voir des logs pendant les tests) -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Tests: JUnit 5 (API + Engine) -->
+        <!-- Tests -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.version}</version>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Mockito JUnit Jupiter -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>${mockito.version}</version>
+            <version>${mockito.junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <!-- Compiler plugin explicite -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <version>${compiler.plugin.version}</version>
                 <configuration>
                     <release>${maven.compiler.release}</release>
                 </configuration>
             </plugin>
 
-            <!-- Surefire: JUnit 5 auto-détecté -->
+            <!-- Surefire JUnit 5 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.5</version>
+                <version>${surefire.version}</version>
                 <configuration>
                     <useModulePath>false</useModulePath>
                 </configuration>
