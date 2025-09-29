@@ -31,7 +31,7 @@ class RteEco2mixClientTest {
                   {"ts":"2024-01-01T12:00:00Z","loadMw":50000,"carbonIntensity":45.2}
                 """)));
 
-        var client = new RteEco2mixClient(WebClient.create(), "http://localhost:18080");
+        var client = new RteEco2mixClient(WebClient.builder().baseUrl("http://localhost:18080").build());
         var cur = client.fetchCurrent();
         assertEquals("2024-01-01T12:00:00Z", cur.ts().toString());
     }
@@ -49,7 +49,9 @@ class RteEco2mixClientTest {
                   ]}
                 """)));
 
-        var client = new RteEco2mixClient(WebClient.create(), "http://localhost:18080");
+        var client = new RteEco2mixClient(
+                WebClient.builder().baseUrl("http://localhost:18080").build()
+        );
         var list = client.fetchHistory(java.time.Instant.parse("2024-01-01T00:00:00Z"),
                 java.time.Instant.parse("2024-01-01T01:00:00Z"),
                 fr.teissiery.energy.domain.model.TimeStep.M15);

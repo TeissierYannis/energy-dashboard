@@ -20,26 +20,23 @@ import java.util.List;
 public class RteEco2mixClient implements MixProviderPort {
 
     private final WebClient http;
-    private final String baseUrl;
 
-    public RteEco2mixClient(WebClient http,
-                            @Value("${providers.rte.base-url:http://localhost:18080}") String baseUrl) {
+    public RteEco2mixClient(WebClient http) {
         this.http = http;
-        this.baseUrl = baseUrl;
     }
 
     @Override
     @Retry(name = "rte")
     @CircuitBreaker(name = "rte")
     public EnergyMixSnapshot fetchCurrent() {
-        var dto = http.get().uri(baseUrl + "/mix/current")
+        var dto = http.get().uri("/mix/current")
                 .retrieve().bodyToMono(MixCurrentDto.class)
                 .block();
         if (dto == null) throw new IllegalStateException("Empty response");
         return new EnergyMixSnapshot(
                 dto.ts(),
                 dto.loadMw(),
-                null,null,null,null,null,null,
+                null, null, null, null, null, null,
                 null,
                 dto.carbonIntensity()
         );
@@ -49,19 +46,21 @@ public class RteEco2mixClient implements MixProviderPort {
     @Retry(name = "rte")
     @CircuitBreaker(name = "rte")
     public List<EnergyMixPoint> fetchHistory(Instant from, Instant to, TimeStep step) {
-        var dto = http.get().uri(uriBuilder -> uriBuilder
-                        .path(baseUrl + "/mix/history")
+        var dto = http.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/mix/history")
                         .queryParam("from", from.toString())
                         .queryParam("to", to.toString())
                         .queryParam("step", step.name())
                         .build())
-                .retrieve().bodyToMono(MixHistoryDto.class)
+                .retrieve()
+                .bodyToMono(MixHistoryDto.class)
                 .block();
         if (dto == null || dto.data() == null) return List.of();
         return dto.data().stream()
                 .map(p -> new EnergyMixPoint(
                         p.ts(), p.loadMw(),
-                        null,null,null,null,null,null,
+                        null, null, null, null, null, null,
                         null, null))
                 .toList();
     }
